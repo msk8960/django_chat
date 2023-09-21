@@ -30,6 +30,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .models import User
+from .models import Message
 
 def create_user(user):
     user = User.objects.create(user=user, is_online=True)
@@ -63,6 +64,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
 from django.contrib import auth
 
+from datetime import datetime
+
 def user_login(request):
     if request.method == 'POST':
   
@@ -89,3 +92,25 @@ def get_online_users(request):
     if request.method == 'GET':
         online_users=get_all_online_users()
         return render(request, 'chat/online.html', {'users':online_users})
+
+def chat_start(request):
+    #messages.info(request, f'let us chat with x')
+    username = request.POST['username']
+    print("user is ", username)
+    user1=auth.models.User.objects.get(username=username)
+    user = User.objects.get(user=user1)
+    try:
+        all_messages = Message.objects.get(sender=user1.id)
+    except Message.DoesNotExist:
+        all_messages = []
+    return render(request, 'chat/chat.html', {'user':user, 'messages':all_messages})
+
+def chat_send(request):
+    #messages.info(request, f'Message is being sent')
+    print("userid = ", request.user.id)
+    #Message.objects.all().delete()
+    content = request.POST['content']
+    message = Message.objects.create(sender=request.user.user, receiver=request.user.user, content=content, timestamp=datetime.now())
+    message.save()
+    all_messages = Message.objects.all()
+    return render(request, 'chat/chat.html', {'user':"user1", 'all_messages':all_messages})

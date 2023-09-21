@@ -13,8 +13,8 @@ These packages need to be installed in order to run the service
 
 ```
 cd project1
-python manage.py migrate --run-syncdb
 python manage.py makemigrations
+python manage.py migrate --run-syncdb
 ```
 
 
