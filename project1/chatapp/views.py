@@ -96,7 +96,7 @@ def get_online_users(request):
 def chat_start(request):
     #messages.info(request, f'let us chat with x')
     username = request.POST['username']
-    print("user is ", username)
+    print("start user is ", username)
     user1=auth.models.User.objects.get(username=username)
     user = User.objects.get(user=user1)
     try:
@@ -108,9 +108,14 @@ def chat_start(request):
 def chat_send(request):
     #messages.info(request, f'Message is being sent')
     print("userid = ", request.user.id)
+    username = request.POST['username']
+    print("user is ", username)
+    user1=auth.models.User.objects.get(username=username)
+    receiver = User.objects.get(user=user1)
+
     #Message.objects.all().delete()
-    content = request.POST['content']
-    message = Message.objects.create(sender=request.user.user, receiver=request.user.user, content=content, timestamp=datetime.now())
+    content_message = request.POST['content']
+    message = Message.objects.create(sender=request.user.user, receiver=receiver, content=content_message, timestamp=datetime.now())
     message.save()
-    all_messages = Message.objects.all()
-    return render(request, 'chat/chat.html', {'user':"user1", 'all_messages':all_messages})
+    all_messages = Message.objects.filter(sender=request.user.user)|Message.objects.filter(receiver=request.user.user)
+    return render(request, 'chat/chat.html', {'user':receiver, 'all_messages':all_messages})
