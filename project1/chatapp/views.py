@@ -81,7 +81,7 @@ def user_login(request):
             user = User.objects.get(user=user1)
             user.is_online=True
             user.save()
-            return redirect('/api')
+            return redirect('/api/online-users/')
         else:
             messages.info(request, f'account does not exit please sign in')
     form = AuthenticationForm()

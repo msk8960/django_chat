@@ -10,7 +10,7 @@
 </h2>
 <div style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;">
 	{% for a_message in all_messages %}
-<p>"{{ a_message.content }}" - {{ a_message.timestamp }}</p>
+<p>"{{ a_message.content }}" - {{ a_message.sender }} {{ a_message.timestamp }}</p>
 
         {% endfor %}
 	{% for user in users %}
@@ -25,7 +25,7 @@
 	<center>
 	<form action='/api/chat/send/' method='POST'>
 			{% csrf_token %}
-        	<input type="text" id="message-input" name="content" autocomplete="off">
+        	<input type="text" id="message-input" style="width:650px" name="content" autocomplete="off">
         	<button type="submit">Send</button>
     	</form>
 	</center>
