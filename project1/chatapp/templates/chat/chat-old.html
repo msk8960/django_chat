@@ -1,0 +1,30 @@
+
+
+<!-- templates/chat/chat.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Chat</title>
+    <!-- Include CSS and JavaScript libraries -->
+</head>
+<body>
+    <h1>Welcome to the Chat Room</h1>
+    <div id="chat-messages">
+        <!-- Messages will be displayed here -->
+
+	{% for user in users %}
+            <tr>
+                <td>{{ user }}</td>
+                <td>{{ user.user.email }}</td>
+                <td>{{ user.is_online }}</td>
+		<br />
+            </tr>
+        {% endfor %}
+    </div>
+    <form id="message-form">
+        <input type="text" id="message-input" autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+    <!-- Include JavaScript code for chat functionality -->
+</body>
+</html>
