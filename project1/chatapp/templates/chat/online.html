@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+{% block start %}
+
+<div class="content-section col-md-8 col-md-offset-2">
+<form method="POST" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;">
+	{% csrf_token %}
+	{% for user in users %}
+            <tr>
+                <td>{{ user }}</td>
+                <td>{{ user.user.email }}</td>
+                <td>{{ user.is_online }}</td>
+		<br />
+            </tr>
+        {% endfor %}
+
+	<br />
+</form>
+</div>
+{% endblock start %}

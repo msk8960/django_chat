@@ -6,6 +6,10 @@ def get_all_users():
     return User.objects.all()
 
 
+def get_all_online_users():
+    print("*******")
+    return User.objects.filter(is_online=True)
+
 # Create your views here.
 def index(request):
     if not request.user.is_authenticated:
@@ -57,7 +61,7 @@ def register(response):
 ################ login forms###################################################
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, authenticate
-
+from django.contrib import auth
 
 def user_login(request):
     if request.method == 'POST':
@@ -70,7 +74,10 @@ def user_login(request):
         if user is not None:
             form = login(request, user)
             messages.success(request, f' welcome {username} !!')
-            print("redirecting to api")
+            user1=auth.models.User.objects.get(username=username)
+            user = User.objects.get(user=user1)
+            user.is_online=True
+            user.save()
             return redirect('/api')
         else:
             messages.info(request, f'account does not exit please sign in')
@@ -78,8 +85,7 @@ def user_login(request):
     return render(request, 'chat/login.html', {'form':form, 'title':'log in'})
 
 
-
-#from django.http import HttpResponse
-
-#def index(request):
-#    return HttpResponse("Hello, world. You're at the polls index.")
+def get_online_users(request):
+    if request.method == 'GET':
+        online_users=get_all_online_users()
+        return render(request, 'chat/online.html', {'users':online_users})

@@ -12,5 +12,6 @@ urlpatterns = [
     #path("login/", LoginView.as_view
          #(template_name="chat/login.html"), name="login-user"),
     path("logout/", LogoutView.as_view(), name="logout-user"),
+    path("online-users/", views.get_online_users, name="online-users"),
     path("register/", views.register, name="register"),
 ]
