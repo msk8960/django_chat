@@ -8,7 +8,7 @@ def get_all_users():
 
 # Create your views here.
 def index(request):
-    if request.user.is_authenticated:
+    if not request.user.is_authenticated:
         return redirect("login-user")
     
     all_users = get_all_users()
@@ -20,19 +20,6 @@ from django.shortcuts import  render, redirect
 from .forms import NewUserForm
 from django.contrib.auth import login
 from django.contrib import messages
-
-def register_request(request):
-	if request.method == "POST":
-		form = NewUserForm(request.POST)
-		if form.is_valid():
-			user = form.save()
-			login(request, user)
-			messages.success(request, "Registration successful." )
-			return redirect("main:homepage")
-		messages.error(request, "Unsuccessful registration. Invalid information.")
-	form = NewUserForm()
-	return render (request=request, template_name="chat/register.html", context={"register_form":form})
-
 
 ########### register here #####################################
 # views.py
@@ -68,7 +55,11 @@ def register(response):
     return render(response, "chat/register.html", {"form":form})
 
 ################ login forms###################################################
-def Login(request):
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, authenticate
+
+
+def user_login(request):
     if request.method == 'POST':
   
         # AuthenticationForm_can_also_be_used__
@@ -79,11 +70,12 @@ def Login(request):
         if user is not None:
             form = login(request, user)
             messages.success(request, f' welcome {username} !!')
-            return redirect('index')
+            print("redirecting to api")
+            return redirect('/api')
         else:
-            messages.info(request, f'account done not exit plz sign in')
+            messages.info(request, f'account does not exit please sign in')
     form = AuthenticationForm()
-    return render(request, 'user/login.html', {'form':form, 'title':'log in'})
+    return render(request, 'chat/login.html', {'form':form, 'title':'log in'})
 
 
 
