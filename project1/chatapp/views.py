@@ -31,20 +31,17 @@ def create_user(user):
 def register(response):
     if response.method == "POST":
         form = RegisterForm(response.POST)
- 
+        
+        print("***", get_all_users()) 
         print(form.is_valid())
         if form.is_valid():
             user = form.save()
             create_user(user)
+            print("redirecting")
+            form = login(response, user)
+            return redirect("/api/online-users")
         else:
             print(form.errors.as_data())
-        
-        print(form.is_valid())
-        #user=form.save()
-        #create_user(user)
-
-        print("***", get_all_users())    
-        return redirect("/api")
     else:
         form = RegisterForm()
 
