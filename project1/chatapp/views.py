@@ -10,16 +10,6 @@ def get_all_online_users():
     print("*******")
     return User.objects.filter(is_online=True)
 
-# Create your views here.
-def index(request):
-    if not request.user.is_authenticated:
-        return redirect("login-user")
-    
-    all_users = get_all_users()
-    print(all_users)
-    return render(request, 'chat/chat.html', {'users': all_users})
-
-
 from django.shortcuts import  render, redirect
 from .forms import NewUserForm
 from django.contrib.auth import login
@@ -93,8 +83,17 @@ def get_online_users(request):
         online_users=get_all_online_users()
         return render(request, 'chat/online.html', {'users':online_users})
 
+
 def chat_start(request):
+    if not request.user.is_authenticated:
+        return redirect("login-user")
+
     #messages.info(request, f'let us chat with x')
+
+    if not "username" in request.POST:
+        messages.error(request, f'please select user to start message')
+        return redirect("online-users")
+
     username = request.POST['username']
     print("start user is ", username)
     user1=auth.models.User.objects.get(username=username)
@@ -105,9 +104,18 @@ def chat_start(request):
         all_messages = []
     return render(request, 'chat/chat.html', {'user':user, 'messages':all_messages})
 
+
 def chat_send(request):
+    if not request.user.is_authenticated:
+        return redirect("login-user")
+
     #messages.info(request, f'Message is being sent')
     print("userid = ", request.user.id)
+
+    if not "username" in request.POST:
+        messages.error(request, f'please select user to send message')
+        return redirect("online-users")
+
     username = request.POST['username']
     print("user is ", username)
     user1=auth.models.User.objects.get(username=username)
