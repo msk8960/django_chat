@@ -1,6 +1,9 @@
 # django_chat
 chat app for NeoFi Assessment
 
+<img src="online-users.PNG" alt="Chat App" width="500"/>
+
+
 ## Python packages
 These packages need to be installed in order to run the service
 - django
