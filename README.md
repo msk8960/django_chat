@@ -11,6 +11,12 @@ These packages need to be installed in order to run the service
 - django-crispy-forms
 - crispy-bootstrap4
 
+You have to install these packages using pip as 
+```
+pip install django channels django-crispy-forms crispy-bootstrap4
+
+```
+
 
 ## Creating Database
 
@@ -25,4 +31,11 @@ python manage.py migrate --run-syncdb
 ```
 cd project1
 python manage.py runserver
+```
+
+
+## Browser
+Start your browser and hit
+```
+localhost:8000/api/login
 ```
