@@ -1,16 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import User
 
-def get_all_users():
-    print("*******")
-    return User.objects.all()
-
-
-def get_all_online_users():
-    print("*******")
-    return User.objects.filter(is_online=True)
-
-from django.shortcuts import  render, redirect
 from .forms import NewUserForm
 from django.contrib.auth import login
 from django.contrib import messages
@@ -21,6 +11,17 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm
 from .models import User
 from .models import Message
+
+
+def get_all_users():
+    print("*******")
+    return User.objects.all()
+
+
+def get_all_online_users():
+    print("*******")
+    return User.objects.filter(is_online=True)
+
 
 def create_user(user):
     user = User.objects.create(user=user, is_online=True)
@@ -64,13 +65,14 @@ def user_login(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username = username, password = password)
+        print(user)
         if user is not None:
             form = login(request, user)
             messages.success(request, f' welcome {username} !!')
-            user1=auth.models.User.objects.get(username=username)
-            user = User.objects.get(user=user1)
-            user.is_online=True
-            user.save()
+            
+            logged_user = User.objects.get(user=user)
+            logged_user.is_online=True
+            logged_user.save()
             return redirect('/api/online-users/')
         else:
             messages.info(request, f'account does not exit please sign in')
@@ -79,6 +81,9 @@ def user_login(request):
 
 
 def get_online_users(request):
+    if not request.user.is_authenticated:
+        return redirect("login-user")
+
     if request.method == 'GET':
         online_users=get_all_online_users()
         return render(request, 'chat/online.html', {'users':online_users})
@@ -99,10 +104,10 @@ def chat_start(request):
     user1=auth.models.User.objects.get(username=username)
     user = User.objects.get(user=user1)
     try:
-        all_messages = Message.objects.get(sender=user1.id)
+        all_messages = Message.objects.filter(sender=user1.id)
     except Message.DoesNotExist:
         all_messages = []
-    return render(request, 'chat/chat.html', {'user':user, 'messages':all_messages})
+    return render(request, 'chat/chat.html', {'user':user, 'all_messages':all_messages})
 
 
 def chat_send(request):
@@ -125,5 +130,5 @@ def chat_send(request):
     content_message = request.POST['content']
     message = Message.objects.create(sender=request.user.user, receiver=receiver, content=content_message, timestamp=datetime.now())
     message.save()
-    all_messages = Message.objects.filter(sender=request.user.user)|Message.objects.filter(receiver=request.user.user)
+    all_messages = Message.objects.filter(sender=request.user.user).filter(receiver=receiver)|Message.objects.filter(receiver=request.user.user).filter(sender=receiver)
     return render(request, 'chat/chat.html', {'user':receiver, 'all_messages':all_messages})
